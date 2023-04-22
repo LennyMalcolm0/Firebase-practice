@@ -74,7 +74,6 @@ label {
 }
 
 .invalid-credentials {
-  display: none;
   width: 300px;
   text-align: start;
   color: red;
@@ -95,7 +94,6 @@ form {
   width: fit-content;
 }
 
-/* Style the input fields */
 .form-input {
   display: block;
   margin-bottom: 10px;
@@ -106,7 +104,6 @@ form {
   font-size: 16px;
 }
 
-/* Style the login button */
 .form-submit, .logout {
   width: fit-content;
   padding: 10px 20px;
@@ -125,7 +122,6 @@ form {
   right: 50px;
 }
 
-/* Style the forgot password and create account links */
 .form-link {
   display: inline-block;
   margin: 0 30px;
@@ -134,7 +130,6 @@ form {
   text-align: center;
 }
 
-/* Style the forgot password and create account links on hover */
 .form-link:hover {
   text-decoration: underline;
 }

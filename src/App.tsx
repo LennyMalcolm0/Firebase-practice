@@ -75,65 +75,6 @@ function App() {
         playerID.value = "";
       })
   }
-  
-  const [validUser, setvalidUser]= useState(false);
-
-  function signUpUser () {
-    const signupForm = document.querySelectorAll('.sign-up input');
-
-    const emailInput = signupForm[0] as HTMLInputElement;
-    const passwordInput = signupForm[1] as HTMLInputElement;
-    
-    const email = emailInput.value;
-    const password = passwordInput.value;
-
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(userCredentials => {
-        console.log(userCredentials)
-        signupForm.forEach(input => {
-          const inputval = input as HTMLInputElement;
-          inputval.value = ""
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  function signInUser () {
-    const signInForm = document.querySelectorAll('.login-form input');
-
-    const emailInput = signInForm[0] as HTMLInputElement;
-    const passwordInput = signInForm[1] as HTMLInputElement;
-    
-    const email = emailInput.value;
-    const password = passwordInput.value;
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then(userCredentials => {
-        console.log(userCredentials)
-        signInForm.forEach(input => {
-          const inputval = input as HTMLInputElement;
-          inputval.value = ""
-          setvalidUser(false)
-        })
-      })
-      .catch(err => {
-        console.log(err)
-        emailInput.style.borderColor = "red";
-        passwordInput.style.borderColor = "red";
-        setvalidUser(true)
-      })
-  }
-  function logoutUser () {
-    signOut(auth)
-      .then(() => {
-        console.log("User signed out")
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
 
   const [userLoggedIn, setUserLoggedIn]= useState(false);
   onAuthStateChanged(auth, (user) => {

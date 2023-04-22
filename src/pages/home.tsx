@@ -106,6 +106,7 @@ const Home = () => {
     return (  
         <div>
             <h1>HOME PAGE</h1>
+            <button className="logout" onClick={logoutUser}>Log out</button>
         </div>
     );
 }
