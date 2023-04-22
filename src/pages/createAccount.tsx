@@ -1,7 +1,7 @@
-const CreteAccount = () => {
+const CreateAccount = () => {
     return (  
         <div></div>
     );
 }
  
-export default CreteAccount;
+export default CreateAccount;

@@ -1,4 +1,5 @@
 import './App.css'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import { 
   collection, addDoc, deleteDoc, doc , onSnapshot, query, where, orderBy, serverTimestamp, updateDoc
@@ -6,6 +7,9 @@ import {
 import { database } from "./firebase";
 import { auth } from './firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import CreateAccount from './pages/createAccount';
+import Login from './pages/login';
+import Home from './pages/home';
 
 function App() {
   // interface player{
@@ -131,93 +135,23 @@ function App() {
       })
   }
 
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-
-  //   }
-  // })
+  const [userLoggedIn, setUserLoggedIn]= useState(false);
+  onAuthStateChanged(auth, (user) => {
+    if (!user) return;
+    
+    setUserLoggedIn(true);
+  })
   
   return (
     <div className="App">
-      {/* <div className="player-forms">
-        <div className="add-player">
-          <div className='player-info'>
-              <label htmlFor="">Player Name</label>
-              <input type= "text" name="name" />
-          </div>
-          <div className='player-info'>
-              <label htmlFor="">Player Age</label>
-              <input type= "text" name="age" />
-          </div>
-          <div className='player-info'>
-              <label htmlFor="">Relationship Satus</label>
-              <input type= "text" name="married" />
-          </div>
-          <div className='player-info'>
-              <label htmlFor="">Player Club</label>
-              <input type= "text" name="club" />
-          </div>
-        
-          <button onClick={addPlayer}>Save</button>
-        </div>  
-
-        <div className="delete-player">
-          <div className='player-info'>
-              <label htmlFor="">Delete Player</label>
-              <input type= "text" name="delete" placeholder="Enter Player ID" />
-          </div>
-        
-          <button onClick={deletePlayer}>Delete</button>
-        </div>
-
-        <div className="update-player">
-          <div className='player-info'>
-              <label htmlFor="">Update Player</label>
-              <input type= "text" name="delete" />
-          </div>
-        
-          <button onClick={updatePlayer}>Update</button>
-        </div>
-      </div>
-
-      <div className="user">
-        <div className="sign-up">
-          <label htmlFor="">Enter Email</label>
-          <input type= "text" name="email" />
-          <label htmlFor="">Enter Password</label>
-          <input type= "password" name="email" />
-          <button onClick={signUpUser}>Sign Up</button>
-        </div>
-
-        <div className="login">
-          <label htmlFor="">Enter Email</label>
-          <input type= "text" name="email" />
-          <label htmlFor="">Enter Password</label>
-          <input type= "password" name="email" />
-          {validUser ? <div className="empty-input">Enter Login Details</div> : <></>}
-          <button onClick={signInUser}>Log In</button>
-        </div>
-        
-        <button onClick={logoutUser}>Log Out</button>
-      </div> */}
-
-      <div className="form-container">
-        <form className='login-form'>
-          <label htmlFor="">Enter Email</label>
-          <input type="text" placeholder="Email" className="form-input username-input"/>
-          <label htmlFor="">Enter Password</label>
-          <input type="password" placeholder="Password" className="form-input password-input"/>
-
-          {validUser ? <div className="empty-input">Enter Login Details</div> : <></>}
-
-          <button type="submit" className="form-submit" onClick={signInUser}>Login</button>
-          
-          <div className='links'>
-            <a href="#" className="form-link forgot-password-link">Forgot Password?</a>
-            <a href="#" className="form-link create-account-link">Create Account</a>
-          </div>
-        </form>
-      </div>
+       <BrowserRouter>
+            <Routes>
+              {/* {!userLoggedIn ? <Route path="/" element={<Navigate to="/login" />} /> : <></>} */}
+              <Route path="/" element={!userLoggedIn ? <Navigate to="/login" /> : <Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/create-account" element={<CreateAccount />} />
+            </Routes>
+          </BrowserRouter>
     </div>
   );
 }
