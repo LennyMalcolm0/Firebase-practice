@@ -97,7 +97,7 @@ function App() {
   }
 
   function signInUser () {
-    const signInForm = document.querySelectorAll('.login input');
+    const signInForm = document.querySelectorAll('.login-form input');
 
     const emailInput = signInForm[0] as HTMLInputElement;
     const passwordInput = signInForm[1] as HTMLInputElement;
@@ -111,6 +111,7 @@ function App() {
         signInForm.forEach(input => {
           const inputval = input as HTMLInputElement;
           inputval.value = ""
+          setvalidUser(false)
         })
       })
       .catch(err => {
@@ -138,7 +139,7 @@ function App() {
   
   return (
     <div className="App">
-      <div className="player-forms">
+      {/* <div className="player-forms">
         <div className="add-player">
           <div className='player-info'>
               <label htmlFor="">Player Name</label>
@@ -198,6 +199,24 @@ function App() {
         </div>
         
         <button onClick={logoutUser}>Log Out</button>
+      </div> */}
+
+      <div className="form-container">
+        <form className='login-form'>
+          <label htmlFor="">Enter Email</label>
+          <input type="text" placeholder="Email" className="form-input username-input"/>
+          <label htmlFor="">Enter Password</label>
+          <input type="password" placeholder="Password" className="form-input password-input"/>
+
+          {validUser ? <div className="empty-input">Enter Login Details</div> : <></>}
+
+          <button type="submit" className="form-submit" onClick={signInUser}>Login</button>
+          
+          <div className='links'>
+            <a href="#" className="form-link forgot-password-link">Forgot Password?</a>
+            <a href="#" className="form-link create-account-link">Create Account</a>
+          </div>
+        </form>
       </div>
     </div>
   );
