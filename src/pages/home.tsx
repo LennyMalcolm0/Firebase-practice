@@ -3,8 +3,10 @@ import {
   collection, addDoc, deleteDoc, doc , onSnapshot, query, where, orderBy, serverTimestamp, updateDoc
 } from "@firebase/firestore";
 import { database } from '../firebase'
+import { collectionRef } from '../firebase';
 import { auth } from '../firebase'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { signOut } from 'firebase/auth'
+import { Link } from 'react-router-dom';
 
 const Home = () => {
     interface player{
@@ -16,10 +18,9 @@ const Home = () => {
       name?: string
     }
     const [playersInfo, setPlayersInfo] = useState<player[]>([]);
-    const [loadedPlayersInfo, setLoadedPlayersInfo]= useState<boolean>(false);
+    const [loading, setLoading]= useState<boolean>(true);
 
-    const collectionReference = collection(database, 'Players');
-    const marriedPlayers = query(collectionReference, orderBy("createdAt"))
+    const marriedPlayers = query(collectionRef, orderBy("position", "desc"))
 
     useEffect(() => {
         onSnapshot(marriedPlayers, (snapshot) => {
@@ -28,26 +29,9 @@ const Home = () => {
                 newPlayersInfo.push({ ...document.data(), id: document.id })
             })
             setPlayersInfo(newPlayersInfo);
-            setLoadedPlayersInfo(true);
+            setLoading(false);
         })
     }, [])
-
-    function addPlayer() {
-        const inputsData = document.querySelectorAll('input');
-
-        addDoc(collectionReference, {
-            name: inputsData[0].value.toString(),
-            age: Number(inputsData[1].value),
-            married: inputsData[2].value.toLowerCase() === "single" ? false : true,
-            club: inputsData[3].value.toString(),
-            createdAt: serverTimestamp()
-        })
-        .then(() => {
-            inputsData.forEach(inputData => {
-            inputData.value = ""
-            })
-        })
-    }
 
     function deletePlayer() {
         const playerID = document.querySelector('.delete-player input') as HTMLInputElement;
@@ -71,10 +55,13 @@ const Home = () => {
         })
     }
 
+    const goToLoginPage= document.querySelector('.login-link') as HTMLElement;
     function logoutUser () {
+        setLoading(true);
         signOut(auth)
         .then(() => {
-            console.log("User signed out")
+            console.log("User signed out");
+            goToLoginPage.click();
         })
         .catch(err => {
             console.log(err)
@@ -83,7 +70,8 @@ const Home = () => {
 
     return (  
         <div className="px-[20px] ">
-            <button className="logout" onClick={logoutUser}>Log out</button>
+            <button className="button logout" onClick={logoutUser}>Log out</button>
+            <Link to="/login" className="login-link"></Link>
 
             <h1 className="mt-[40px] mb-[50px] font-bold text-blue-600 ">Emmy's Team</h1>
             <div className="flex mb-[30px] px-[50px] font-bold text-[18px] ">
@@ -101,7 +89,9 @@ const Home = () => {
                 </div>
             </div>
 
-            {loadedPlayersInfo ? 
+            {loading ? <div className="animate-pulse h-screen w-screen fixed top-0 bg-[#202123] "></div> : <></>}
+
+            {!loading ? 
                 playersInfo.map((player) => (
                     <div key={player.id} className="flex mb-[10px] px-[50px] py-[10px] bg-yellow-500 rounded text-white capitalize font-semibold ">
                         <div className="w-[200px] ">
@@ -118,10 +108,10 @@ const Home = () => {
                         </div>
                     </div>
                 )) :
-                <div className="animate-pulse h-screen w-screen fixed top-0 bg-[#202123] "></div>
+                <></>
             }
             
-            <button className="mt-[30px] add-player ">Add Player</button>
+            <Link to="/add-player"><button className="add-player text-white mt-[30px] ">Add Player</button></Link>
         </div>
     );
 }

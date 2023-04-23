@@ -18,7 +18,7 @@ const Login = () => {
         signInForm.classList.add("animate-pulse");
 
         const signInFormInputs = document.querySelectorAll('.login-form input');
-        const goToHomePage = document.querySelector('.link-home') as HTMLElement;
+        const goToHomePage = document.querySelector('.home-link') as HTMLElement;
     
         const emailInput = signInFormInputs[0] as HTMLInputElement;
         const passwordInput = signInFormInputs[1] as HTMLInputElement;
@@ -54,10 +54,10 @@ const Login = () => {
 
                     {validUser ? <></> : <div className="invalid-credentials">Enter valid login details Or sign up if you don't have an account</div>}
 
-                    <button type="submit" className="form-submit">Login</button>
-                    <Link to="/" className="link-home"></Link>
+                    <button type="submit" className="form-submit mt-[30px] ">Login</button>
+                    <Link to="/" className="home-link"></Link>
                     
-                    <div className='links'>
+                    <div className='links mt-[20px] '>
                         <Link to="/forgot-password" className="form-link forgot-password-link">Forgot Password?</Link>
                         <Link to='/create-account' className="form-link create-account-link">Create Account</Link>
                     </div>
