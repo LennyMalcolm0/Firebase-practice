@@ -7,28 +7,28 @@ import { auth } from '../firebase'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
 
 const Home = () => {
-    // interface player{
-    //   age: number
-    //   club: string
-    //   createdAt: string
-    //   id: string
-    //   married: boolean
-    //   name: string
-    // }
-
-    const playersInfo: Object[] = [];
-    const [loadedPlayersInfo, setLoadedPlayersInfo]= useState(false);
+    interface player{
+      age?: number
+      club?: string
+      createdAt?: any
+      id: string
+      position?: string
+      name?: string
+    }
+    const [playersInfo, setPlayersInfo] = useState<player[]>([]);
+    const [loadedPlayersInfo, setLoadedPlayersInfo]= useState<boolean>(false);
 
     const collectionReference = collection(database, 'Players');
     const marriedPlayers = query(collectionReference, orderBy("createdAt"))
 
     useEffect(() => {
         onSnapshot(marriedPlayers, (snapshot) => {
+            const newPlayersInfo: player[] = [];
             snapshot.forEach(document => {
-                playersInfo.push({ ...document.data(), id: document.id })
-                setLoadedPlayersInfo(true);
-                // console.log(playersInfo)
+                newPlayersInfo.push({ ...document.data(), id: document.id })
             })
+            setPlayersInfo(newPlayersInfo);
+            setLoadedPlayersInfo(true);
         })
     }, [])
 
@@ -71,28 +71,6 @@ const Home = () => {
         })
     }
 
-    function signUpUser () {
-        const signupForm = document.querySelectorAll('.sign-up input');
-
-        const emailInput = signupForm[0] as HTMLInputElement;
-        const passwordInput = signupForm[1] as HTMLInputElement;
-        
-        const email = emailInput.value;
-        const password = passwordInput.value;
-
-        createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredentials => {
-            console.log(userCredentials)
-            signupForm.forEach(input => {
-            const inputval = input as HTMLInputElement;
-            inputval.value = ""
-            })
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }
-
     function logoutUser () {
         signOut(auth)
         .then(() => {
@@ -104,9 +82,46 @@ const Home = () => {
     }
 
     return (  
-        <div>
-            <h1>HOME PAGE</h1>
+        <div className="px-[20px] ">
             <button className="logout" onClick={logoutUser}>Log out</button>
+
+            <h1 className="mt-[40px] mb-[50px] font-bold text-blue-600 ">Emmy's Team</h1>
+            <div className="flex mb-[30px] px-[50px] font-bold text-[18px] ">
+                <div className="w-[200px] ">
+                    <div>Name</div>
+                </div>
+                <div className="w-[200px] ">
+                    <div>Age</div>
+                </div>
+                <div className="w-[200px] ">
+                    <div>Club</div>
+                </div>
+                <div className="w-[200px] ">
+                    <div>Position</div>
+                </div>
+            </div>
+
+            {loadedPlayersInfo ? 
+                playersInfo.map((player) => (
+                    <div key={player.id} className="flex mb-[10px] px-[50px] py-[10px] bg-yellow-500 rounded text-white capitalize font-semibold ">
+                        <div className="w-[200px] ">
+                            <div>{player.name}</div>
+                        </div>
+                        <div className="w-[200px] ">
+                            <div>{player.age}</div>
+                        </div>
+                        <div className="w-[200px] ">
+                            <div>{player.club}</div>
+                        </div>
+                        <div className="w-[200px] ">
+                            <div>{player.position}</div>
+                        </div>
+                    </div>
+                )) :
+                <div className="animate-pulse h-screen w-screen fixed top-0 bg-[#202123] "></div>
+            }
+            
+            <button className="mt-[30px] add-player ">Add Player</button>
         </div>
     );
 }
