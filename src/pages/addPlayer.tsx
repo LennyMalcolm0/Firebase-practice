@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { typing } from '../components/generalFunctions';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
-import { collectionRef } from '../firebase';
+import { playersCollection } from '../firebase';
 import React from 'react';
 
 const AddPlayer = () => {
@@ -13,7 +13,7 @@ const AddPlayer = () => {
         const inputsData: NodeListOf<HTMLInputElement> = document.querySelectorAll('.add-player-form input');
         const returnToHomePage = document.querySelector('.home-link') as HTMLElement;
 
-        addDoc(collectionRef, {
+        addDoc(playersCollection, {
             name: inputsData[0].value.toString(),
             age: Number(inputsData[1].value),
             club: inputsData[2].value.toString(),

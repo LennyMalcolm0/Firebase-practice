@@ -21,4 +21,5 @@ const analytics = getAnalytics(app);
 export const database = getFirestore();
 export const auth = getAuth();
 
-export const collectionRef = collection(database, 'Players');
+export const playersCollection = collection(database, 'Players');
+export const usersCollection = collection(database, 'Users');

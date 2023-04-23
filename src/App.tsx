@@ -10,10 +10,15 @@ import AddPlayer from './pages/addPlayer';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn]= useState(true);
+
   useEffect(() => {
+    if (!auth.currentUser) return;
+    setUserLoggedIn(true);
+
     onAuthStateChanged(auth, (user) => {
       setUserLoggedIn(true);
     });
+    
   }, []);
   
   return (

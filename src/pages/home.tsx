@@ -3,7 +3,7 @@ import {
   collection, addDoc, deleteDoc, doc , onSnapshot, query, where, orderBy, serverTimestamp, updateDoc
 } from "@firebase/firestore";
 import { database } from '../firebase'
-import { collectionRef } from '../firebase';
+import { playersCollection } from '../firebase';
 import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 import { Link } from 'react-router-dom';
@@ -20,7 +20,7 @@ const Home = () => {
     const [playersInfo, setPlayersInfo] = useState<player[]>([]);
     const [loading, setLoading]= useState<boolean>(true);
 
-    const marriedPlayers = query(collectionRef, orderBy("position", "desc"))
+    const marriedPlayers = query(playersCollection, orderBy("position", "desc"))
 
     useEffect(() => {
         onSnapshot(marriedPlayers, (snapshot) => {
@@ -32,6 +32,7 @@ const Home = () => {
             setLoading(false);
         })
     }, [])
+    console.log(auth.currentUser)
 
     function deletePlayer() {
         const playerID = document.querySelector('.delete-player input') as HTMLInputElement;
@@ -70,7 +71,7 @@ const Home = () => {
 
     return (  
         <div className="px-[20px] ">
-            <button className="button logout" onClick={logoutUser}>Log out</button>
+            <button className="button logout mt-[30px] " onClick={logoutUser}>Log out</button>
             <Link to="/login" className="login-link"></Link>
 
             <h1 className="mt-[40px] mb-[50px] font-bold text-blue-600 ">Emmy's Team</h1>
