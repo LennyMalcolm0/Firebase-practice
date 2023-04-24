@@ -28,18 +28,13 @@ const CreateAccount = () => {
             const user: any | null = auth.currentUser;
             sendEmailVerification(user);
 
-            // if (!user) return;
             const userDocument = doc(database, "users", user.uid);
-    
             setDoc(userDocument, {
                 username: userName
             });
     
             const userDocumentCollection = collection(userDocument, "user-team");
             addDoc(userDocumentCollection, {
-                stringExample: "Hello world!",
-                booleanExample: true,
-                numberExample: 3,
             })
 
             document.querySelector('a')?.click();

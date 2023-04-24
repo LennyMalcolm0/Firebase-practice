@@ -3,7 +3,6 @@ import {
   collection, addDoc, deleteDoc, doc , onSnapshot, query, where, orderBy, serverTimestamp, updateDoc
 } from "@firebase/firestore";
 import { database } from '../firebase'
-import { playersCollection } from '../firebase';
 import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 import { Link } from 'react-router-dom';
@@ -19,11 +18,15 @@ const Home = () => {
     }
     const [playersInfo, setPlayersInfo] = useState<player[]>([]);
     const [loading, setLoading]= useState<boolean>(true);
+    
+    const user: any | null = auth.currentUser,
+    userDocument = doc(database, "users", user.uid),
+    userDocumentCollection = collection(userDocument, "user-team");
 
-    const marriedPlayers = query(playersCollection, orderBy("position", "desc"))
+    const userPlayers = query(userDocumentCollection, orderBy("position", "desc"))
 
     useEffect(() => {
-        onSnapshot(marriedPlayers, (snapshot) => {
+        onSnapshot(userPlayers, (snapshot) => {
             const newPlayersInfo: player[] = [];
             snapshot.forEach(document => {
                 newPlayersInfo.push({ ...document.data(), id: document.id })

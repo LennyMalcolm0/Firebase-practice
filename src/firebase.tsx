@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { collection, getFirestore } from 'firebase/firestore'
+import { collection, doc, getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -22,4 +22,8 @@ export const database = getFirestore();
 export const auth = getAuth();
 
 export const playersCollection = collection(database, 'Players');
-export const usersCollection = collection(database, 'Users');
+export const usersCollection = collection(database, 'users');
+
+// export const user: any | null = auth.currentUser;
+// export const userDocument = doc(database, "users", user.uid);
+// export const userDocumentCollection = collection(userDocument, "user-team");
