@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   collection, addDoc, deleteDoc, doc , onSnapshot, query, where, orderBy, serverTimestamp, updateDoc
 } from "@firebase/firestore";
@@ -17,25 +17,31 @@ const Home = () => {
       name?: string
     }
     const [playersInfo, setPlayersInfo] = useState<player[]>([]);
+    const [displayUsername, setDisplayUsername] = useState<{username: string} | any>();
     const [loading, setLoading]= useState<boolean>(true);
     
     const user: any | null = auth.currentUser,
-    userDocument = doc(database, "users", user.uid),
-    userDocumentCollection = collection(userDocument, "user-team");
+    userDocument = doc(database, "users", user.uid);
 
-    const userPlayers = query(userDocumentCollection, orderBy("position", "desc"))
+    useEffect(() => {
+        onSnapshot(userDocument, (snapshot) => {
+            setDisplayUsername(snapshot.data());
+        })
+    }, [])
+    
+    const userDocumentCollection = collection(userDocument, "user-team");
+    const userPlayers = query(userDocumentCollection, orderBy("position", "desc"));
 
     useEffect(() => {
         onSnapshot(userPlayers, (snapshot) => {
             const newPlayersInfo: player[] = [];
             snapshot.forEach(document => {
-                newPlayersInfo.push({ ...document.data(), id: document.id })
+                newPlayersInfo.push({ ...document.data(), id: document.id });
             })
             setPlayersInfo(newPlayersInfo);
             setLoading(false);
         })
-    }, [])
-    console.log(auth.currentUser)
+    }, []);
 
     function deletePlayer() {
         const playerID = document.querySelector('.delete-player input') as HTMLInputElement;
@@ -77,7 +83,7 @@ const Home = () => {
             <button className="button logout mt-[30px] " onClick={logoutUser}>Log out</button>
             <Link to="/login" className="login-link"></Link>
 
-            <h1 className="mt-[40px] mb-[50px] font-bold text-blue-600 ">Emmy's Team</h1>
+            <h1 className="mt-[40px] mb-[50px] font-bold text-blue-600 ">{`${displayUsername ? displayUsername.username : ""} Team`}</h1>
             <div className="flex mb-[30px] px-[50px] font-bold text-[18px] ">
                 <div className="w-[200px] ">
                     <div>Name</div>

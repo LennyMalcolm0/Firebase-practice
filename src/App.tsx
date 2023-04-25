@@ -1,41 +1,31 @@
 import './App.css'
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState } from 'react'
 import { auth } from './firebase';
-import { onAuthStateChanged } from 'firebase/auth'
 import CreateAccount from './pages/createAccount';
 import Login from './pages/login';
 import Home from './pages/home';
 import AddPlayer from './pages/addPlayer';
 import ForgotPassword from './pages/forgotPassword';
+import { createBrowserHistory } from 'history';
 
 function App() {
-  const [userLoggedIn, setUserLoggedIn]= useState(true);
+  const [userLoggedIn, setUserLoggedIn]= useState<boolean>();
+  const history = createBrowserHistory();
 
-  useEffect(() => {
-    if (!auth.currentUser) return;
-    setUserLoggedIn(true);
-
-    onAuthStateChanged(auth, (user) => {
-      setUserLoggedIn(true);
-    });
-    
-  }, []);
+  !auth.currentUser ? history.push("/login") : setUserLoggedIn(true);
   
   return (
     <div className="App ">
-       <BrowserRouter>
-            <Routes>
-              {!userLoggedIn ?
-                <Route path="/" element={<Navigate to={"/login"} />} /> :
-                <Route path="/" element={<Home />} />
-              }
-              <Route path="/login" element={<Login />} />
-              <Route path="/create-account" element={<CreateAccount />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/add-player" element={<AddPlayer />} />
-            </Routes>
-          </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/create-account" element={<CreateAccount />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/add-player" element={<AddPlayer />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
