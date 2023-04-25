@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { 
   collection, addDoc, deleteDoc, doc , onSnapshot, query, where, orderBy, serverTimestamp, updateDoc
 } from "@firebase/firestore";
-import { database } from '../firebase'
+import { database } from '../firebase';
 import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 import { Link } from 'react-router-dom';
@@ -43,14 +43,11 @@ const Home = () => {
         })
     }, []);
 
-    function deletePlayer() {
-        const playerID = document.querySelector('.delete-player input') as HTMLInputElement;
+    function deletePlayer(e: string) {
 
-        const docReference = doc(database, 'Players', playerID.value);
+        const docReference = doc(userDocument, 'user-team', e);
         deleteDoc(docReference)
-        .then(() => {
-            playerID.value = "";
-        })
+        .then(() => {})
     }
 
     function updatePlayer() {
@@ -103,7 +100,7 @@ const Home = () => {
 
             {!loading ? 
                 playersInfo.map((player) => (
-                    <div key={player.id} className="flex mb-[10px] px-[50px] py-[10px] bg-yellow-500 rounded text-white capitalize font-semibold ">
+                    <div key={player.id} className="flex items-center mb-[10px] px-[50px] py-[10px] bg-yellow-500 rounded text-white capitalize font-semibold ">
                         <div className="w-[200px] ">
                             <div>{player.name}</div>
                         </div>
@@ -116,6 +113,7 @@ const Home = () => {
                         <div className="w-[200px] ">
                             <div>{player.position}</div>
                         </div>
+                        <button className="p-[5px] " onClick={() => deletePlayer(player.id)}>Delete</button>
                     </div>
                 )) :
                 <></>
