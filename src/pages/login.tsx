@@ -5,12 +5,11 @@ import {
 import { auth } from "../firebase";
 import React, { useState } from "react";
 import { Link } from 'react-router-dom'
-import { createBrowserHistory } from 'history';
 import { typing } from "../components/generalFunctions";
 
 const Login = () => {
     const [validUser, setvalidUser]= useState(true);
-    const history = createBrowserHistory();
+    const [validPassword, setvalidPassword]= useState(true);
 
     const signInUser = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -34,11 +33,20 @@ const Login = () => {
         })
         .catch(err => {
             signInForm.classList.remove("animate-pulse");
-            // console.log(err);
-            emailInput.style.borderColor = "red";
-            passwordInput.style.borderColor = "red";
-            
-            setvalidUser(false)
+
+            const errorMessage = err.message;
+            if (errorMessage === "Firebase: Error (auth/wrong-password).") {
+                passwordInput.style.borderColor = "red";
+
+                setvalidUser(true);
+                setvalidPassword(false);
+            } else {
+                emailInput.style.borderColor = "red";
+                passwordInput.style.borderColor = "red"; 
+
+                setvalidPassword(true);
+                setvalidUser(false);
+            }
         })
     }
 
@@ -53,6 +61,7 @@ const Login = () => {
                     <input type="password" onInput={typing} placeholder="Password" className="form-input password-input"/>
 
                     {validUser ? <></> : <div className="invalid-credentials">Enter valid login details Or sign up if you don't have an account</div>}
+                    {validPassword ? <></> : <div className="invalid-credentials">Wrong password</div>}
 
                     <button type="submit" className="form-submit mt-[30px] ">Login</button>
                     <Link to="/" className="home-link"></Link>
