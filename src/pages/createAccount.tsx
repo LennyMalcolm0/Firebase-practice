@@ -1,14 +1,15 @@
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth, database, usersCollection } from '../firebase';
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
 
 const CreateAccount = () => {
+    const navigate = useNavigate();
+
     function signUpUser (e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
         const signupForm = document.querySelectorAll('.sign-up-form input');
-        // const linkTag = document.querySelector('a');
     
         const emailInput = signupForm[0] as HTMLInputElement;
         const usernameInput = signupForm[1] as HTMLInputElement;
@@ -19,25 +20,21 @@ const CreateAccount = () => {
         const password = passwordInput.value;
     
         createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredentials => {
-            console.log(userCredentials)
+        .then(() => {
             signupForm.forEach(input => {
                 const inputval = input as HTMLInputElement;
                 inputval.value = "";
             })
-            const user: any | null = auth.currentUser;
+            const user: any = auth.currentUser;
             sendEmailVerification(user);
 
             const userDocument = doc(database, "users", user.uid);
             setDoc(userDocument, {
                 username: userName
-            });
-    
-            const userDocumentCollection = collection(userDocument, "user-team");
-            addDoc(userDocumentCollection, {
             })
-
-            document.querySelector('a')?.click();
+            .then(() => {
+                navigate("/");
+            })
         })
         .catch(err => {
             console.log(err)
@@ -56,7 +53,6 @@ const CreateAccount = () => {
                     <input type="password" placeholder="Password" className="form-input"/>
 
                     <button type="submit" className="form-submit">Sign up</button>
-                    <Link to="/"></Link>
                 </form>
             </div>
         </div>

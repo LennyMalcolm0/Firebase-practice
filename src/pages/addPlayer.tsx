@@ -1,19 +1,20 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { typing } from '../components/generalFunctions';
 import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore';
 import { auth, database } from '../firebase';
 import React from 'react';
 
 const AddPlayer = () => {
+    const navigate = useNavigate();
+
     function addPlayer(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const addPlayerForm= document.querySelector('.add-player-form') as HTMLElement;
         addPlayerForm.classList.add("animate-pulse");
 
         const inputsData: NodeListOf<HTMLInputElement> = document.querySelectorAll('.add-player-form input');
-        const returnToHomePage = document.querySelector('.home-link') as HTMLElement;
 
-        const user: any | null = auth.currentUser,
+        const user: any = auth.currentUser,
         userDocument = doc(database, "users", user.uid),
         userDocumentCollection = collection(userDocument, "user-team");
         
@@ -27,9 +28,11 @@ const AddPlayer = () => {
         .then(() => {
             inputsData.forEach(inputData => {
                 inputData.value = "";
-            })
+            });
+
             addPlayerForm.classList.remove("animate-pulse");
-            returnToHomePage.click();
+
+            navigate("/");
         })
         .catch(err => {
             addPlayerForm.classList.remove("animate-pulse");
@@ -53,7 +56,6 @@ const AddPlayer = () => {
                     <input type="text" onInput={typing} placeholder="Position" className="form-input password-input"/>
 
                     <button type="submit" className="form-submit mt-[20px] ">Done</button>
-                    <Link to="/" className="home-link"></Link>
                 </form>
             </div>
         </div>
